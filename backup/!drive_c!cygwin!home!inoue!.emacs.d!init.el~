@@ -1,0 +1,395 @@
+;; -*- coding:utf-8 -*-
+
+;; Emacs 23より前のバージョンの場合
+;; 設定を追加
+(when (< emacs-major-version 23)
+  (defvar user-emacs-directory "~/.emacs.d"))
+
+;; load-pathを追加する関数を定義
+(defun add-to-load-path (&rest paths)
+  (let (path)
+    (dolist (path paths paths)
+      (let ((default-directory
+              (expand-file-name (concat user-emacs-directory path))))
+        (add-to-list 'load-path default-directory)
+        (if (fboundp 'normal-top-level-add-subdirs-to-load-path)
+            (normal-top-level-add-subdirs-to-load-path))))))
+
+;; マクロ内で[,@]は、評価しつつ、リストを1段階展開する
+;; requireを少し便利にするマクロ
+;; http://d.hatena.ne.jp/khiker/20091120/emacs_require_load_macro
+(defmacro require-and-when (feature &rest body)
+  `(if (require ,feature nil t)
+       (progn ,@body)
+     (message "Require error: %s" ,feature)))
+
+;; ロードパス設定
+(add-to-load-path "site-lisp")
+
+;; auto-install.el
+;; http://www.emacswiki.org/emacs/download/auto-install.el
+(require-and-when 'auto-install
+                  ;; (setq url-proxy-services '(("http" . "localhost:8080"))) 
+                  (setq auto-install-directory "~/.emacs.d/site-lisp")
+                  (setq auto-install-use-wget nil)
+                  ;; 起動時にEmacsWikiのページを補間候補に加える
+                  (auto-install-update-emacswiki-package-name t)
+                  ;; install-elisp.el互換モードにする
+                  (auto-install-compatibility-setup)
+                  ;; editff関連バッファを１つのフレームにまとめる
+                  (setq ediff-window-setup-function 'ediff-setup-windows-plain))
+
+;; auto-complete.el
+;; http://cx4a.org/software/auto-complete/index.ja.html
+(require-and-when 'auto-complete-config
+                  (add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/ac-dict")
+                  (ac-config-default))
+
+;; color-theme.el
+;; http://www.nongnu.org/color-theme/
+(require-and-when 'color-theme
+                  (color-theme-initialize)
+                  ;;(color-theme-aalto-light)
+                  ;;(color-theme-hober)
+                  ;;(color-theme-tty-dark)
+                  (color-theme-pok-wob))
+
+;; open-junk-file.el
+;; (install-elisp-from-emacswiki open-junk-file.el)
+(require-and-when 'open-junk-file
+                  (setq open-junk-file-format "~/junk/%Y%m%d_%H%M%S."))
+ 
+;; maxframe.el
+;; http://files.emacsblog.org/ryan/elisp/maxframe.el
+(require-and-when 'maxframe
+                  (add-hook 'window-setup-hook 'maximize-frame t))
+
+;; redo+.el
+;; (install-elisp-from-emacswiki redo+.el)
+(require-and-when 'redo+
+                  (global-set-key (kbd "C-\\") 'redo)
+                  (setq undo-no-redo t)
+                  (setq undo-limit 600000)
+                  (setq undo-strong-limit 900000))
+
+;; jaspace.el
+;; http://homepage3.nifty.com/satomii/software/elisp.ja.html
+;; (install-elisp "http://homepage3.nifty.com/satomii/software/jaspace.el")
+(require-and-when 'jaspace
+                  (setq jaspace-alternate-eol-string "\x24\n")
+                  (setq jaspace-highlight-tabs ?^)
+                  (add-to-list 'jaspace-modes 'ruby-mode))
+
+;; summarye.el
+;; (install-elisp-from-emacswiki "summarye.el")
+(require 'summarye)
+
+;; sequential-command.el
+;; C-a C-e M-ulc を連続入力で挙動を変更する
+;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/sequential-command.el")
+;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/sequential-command-config.el")
+(require-and-when 'sequential-command
+                  (require 'sequential-command-config)
+                  (sequential-command-setup-keys))
+
+;; ファイル名がかぶった時、バッファ名を分かりやすくする。
+(require-and-when 'uniquify
+                  ;; filename<dir>形式のバッファ名にする
+                  (setq uniquify-buffer-name-style 'post-forword-angle-brackets)
+                  ;; *で囲まれたバッファ名は対象がいにする
+                  (setq uniquify-ignore-buffers-re "*[^*]+*"))
+
+;; ElScreen
+;; ftp://ftp.morishima.net/pub/morishima.net/naoto/ElScreen/
+;; http://www.morishima.net/~naoto/elscreen-ja/
+;; APELが必要なため、インストールを行なっている
+;; http://cvs.m17n.org/elisp/APEL/
+;; インストールバッチを利用せず、直接コピーを行っている
+;; (require-and-when 'elscreen
+;;                   (elscreen-set-prefix-key "\C-@")
+;;                   (require 'elscreen-server))
+;; (install-elisp "http://emhacks.cvs.sourceforge.net/viewvc/emhacks/emhacks/tabbar.el?revision=1.69&content-type=text%2Fplain")
+;; (require-and-when 'tabbar
+;;                   (tabbar-mode))
+
+;; recentff-ext.el
+;; (install-elisp-from-emacswiki "recentf-ext.el")
+(require-and-when 'recentf-ext
+                  (setq recentf-max-saved-items 500)
+                  ;(setq recentf-excude '("/TAGS$" "/var/tmp/")
+                  (define-key global-map (kbd "C-,") 'recentf-open-files))
+
+;; bm.el
+;; (install-elisp "http://cvs.savannah.gnu.org/viewvc/*checkout*/bm/bm/bm.el")
+(require-and-when 'bm
+                  (setq-default bm-buffer-persistence nil)
+                  (setq bm-restore-repository-on-load t)
+                  (add-hook 'find-file-hook 'bm-buffer-restore)
+                  (add-hook 'kill-buffer-hook 'bm-buffer-restore)
+                  (add-hook 'after-save-hook 'bm-buffer-restore)
+                  (add-hook 'after-revert-hook 'bm-buffer-restore)
+                  (add-hook 'vc-before-checkin-hook 'bm-buffer-restore)
+                  (define-key global-map (kbd "M-SPC") 'bm-toggle)
+                  (define-key global-map (kbd "M-[") 'bm-previous)
+                  (define-key global-map (kbd "M-]") 'bm-next))
+
+;; goto-chg.el
+;; (install-elisp-from-emacswiki "goto-chg.el")
+(require-and-when 'goto-chg
+                  (define-key global-map (kbd "<f8>") 'goto-last-change)
+                  (define-key global-map (kbd "S-<f8>") 'goto-last-change-reverse))
+
+;; sense-region.el
+;; (install-elisp "http://taiyaki.org/elisp/sense-region/src/sense-region.el")
+
+;; ruby-mode
+;; 標準のものではruby-electricがうまく動作しなかったため、
+;; 以下のsvnから取得を行なっている
+;; http://svn.ruby-lang.org/repos/ruby/trunk
+(autoload 'ruby-mode "ruby-mode" "Major mode for ruby files" t)
+(add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
+(add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
+;; inf-ruby
+(autoload 'run-ruby "inf-ruby" "Run an inferior Ruby process")
+(autoload 'inf-ruby-keys "inf-ruby" "Set local key defs for inf-ruby in ruby-mode")
+(add-hook 'ruby-mode-hook '(lambda () (inf-ruby-keys)))
+;; ruby-electric
+(require 'ruby-electric)
+(add-hook 'ruby-mode-hook '(lambda () (ruby-electric-mode t)))
+;; ruby-style
+(require 'ruby-style)
+(add-hook 'c-mode-hook 'ruby-style-c-mode)
+(add-hook 'c++-mode-hook 'ruby-style-c-mode)
+;; rubydb
+(autoload 'rubydb "rubydb3x"
+  "run rubydb on program file in buffer *gud-file*.
+the directory containing file becomes the initial working directory
+and source-file directory for your debugger." t)
+
+;; scheme-mode
+(modify-coding-system-alist 'process "gosh" '(utf-8 . utf-8))
+(setq scheme-program-name "gosh -i")
+(autoload 'scheme-mode "cmuscheme" "Major Mode For Scheme." t)
+(autoload 'run-scheme "cmuscheme" "Run an inferior Scheme process." t)
+(defun scheme-other-window ()
+  "Run scheme on other window"
+  (interactive)
+  (switch-to-buffer-other-window
+   (get-buffer-create "*scheme*"))
+  (run-scheme scheme-program-name))
+(add-hook 'scheme-mode-hook
+	  '(lambda ()
+	     (define-key scheme-mode-map
+	       "\C-cs" 'scheme-other-window)))
+(add-hook
+ 'cmuscheme-load-hook
+ '(lambda()
+    (defun scheme-args-to-list (string)
+      (if (string= string "") nil
+        (let ((where (string-match "[ \t]" string)))
+          (cond ((null where) (list string))
+                ((not (= where 0))
+                 (let ((qpos (string-match "^\"\\([^\"]*\\)\"" string)))
+                   (if (null qpos)
+                       (cons (substring string 0 where)
+                             (scheme-args-to-list
+                              (substring string (+ 1 where)
+                                         (length string))))
+                     (cons (substring string
+                                      (match-beginning 1)
+                                      (match-end 1))
+                           (scheme-args-to-list
+                            (substring string
+                                       (match-end 0)
+                                       (length string)))))))
+                (t (let ((pos (string-match "[^ \t]" string)))
+                     (if (null pos)
+                         nil
+                       (scheme-args-to-list
+                        (substring string pos
+                                   (length string))))))))))))
+(put 'and-let* 'scheme-indent-function 1)
+(put 'begin0 'scheme-indent-function 0)
+(put 'call-with-client-socket 'scheme-indent-function 1)
+(put 'call-with-input-conversion 'scheme-indent-function 1)
+(put 'call-with-input-file 'scheme-indent-function 1)
+(put 'call-with-input-process 'scheme-indent-function 1)
+(put 'call-with-input-string 'scheme-indent-function 1)
+(put 'call-with-iterator 'scheme-indent-function 1)
+(put 'call-with-output-conversion 'scheme-indent-function 1)
+(put 'call-with-output-file 'scheme-indent-function 1)
+(put 'call-with-output-string 'scheme-indent-function 0)
+(put 'call-with-temporary-file 'scheme-indent-function 1)
+(put 'call-with-values 'scheme-indent-function 1)
+(put 'dolist 'scheme-indent-function 1)
+(put 'dotimes 'scheme-indent-function 1)
+(put 'if-match 'scheme-indent-function 2)
+(put 'let*-values 'scheme-indent-function 1)
+(put 'let-args 'scheme-indent-function 2)
+(put 'let-keywords* 'scheme-indent-function 2)
+(put 'let-match 'scheme-indent-function 2)
+(put 'let-optionals* 'scheme-indent-function 2)
+(put 'let-syntax 'scheme-indent-function 1)
+(put 'let-values 'scheme-indent-function 1)
+(put 'let/cc 'scheme-indent-function 1)
+(put 'let1 'scheme-indent-function 2)
+(put 'letrec-syntax 'scheme-indent-function 1)
+(put 'make 'scheme-indent-function 1)
+(put 'multiple-value-bind 'scheme-indent-function 2)
+(put 'match 'scheme-indent-function 1)
+(put 'parameterize 'scheme-indent-function 1)
+(put 'parse-options 'scheme-indent-function 1)
+(put 'receive 'scheme-indent-function 2)
+(put 'rxmatch-case 'scheme-indent-function 1)
+(put 'rxmatch-cond 'scheme-indent-function 0)
+(put 'rxmatch-if 'scheme-indent-function 2)
+(put 'rxmatch-let 'scheme-indent-function 2)
+(put 'syntax-rules 'scheme-indent-function 1)
+(put 'unless 'scheme-indent-function 1)
+(put 'until 'scheme-indent-function 1)
+(put 'when 'scheme-indent-function 1)
+(put 'while 'scheme-indent-function 1)
+(put 'with-builder 'scheme-indent-function 1)
+(put 'with-error-handler 'scheme-indent-function 0)
+(put 'with-error-to-port 'scheme-indent-function 1)
+(put 'with-input-conversion 'scheme-indent-function 1)
+(put 'with-input-from-port 'scheme-indent-function 1)
+(put 'with-input-from-process 'scheme-indent-function 1)
+(put 'with-input-from-string 'scheme-indent-function 1)
+(put 'with-iterator 'scheme-indent-function 1)
+(put 'with-module 'scheme-indent-function 1)
+(put 'with-output-conversion 'scheme-indent-function 1)
+(put 'with-output-to-port 'scheme-indent-function 1)
+(put 'with-output-to-process 'scheme-indent-function 1)
+(put 'with-output-to-string 'scheme-indent-function 1)
+(put 'with-port-locking 'scheme-indent-function 1)
+(put 'with-string-io 'scheme-indent-function 1)
+(put 'with-time-counter 'scheme-indent-function 1)
+(put 'with-signal-handlers 'scheme-indent-function 1)
+(put 'with-locking-mutex 'scheme-indent-function 1)
+(put 'guard 'scheme-indent-function 1)
+
+;; 日本語環境
+(set-language-environment "Japanese")
+(prefer-coding-system 'utf-8)
+(when (eq window-system 'w32)
+  (set-file-name-coding-system 'cp932)
+  (setq locale-coding-system 'cp932))
+
+; フォント設定
+(set-default-font "consolas 12")
+(set-fontset-font (frame-parameter nil 'font)
+                  'japanese-jisx0208
+                  '("MeiryoKe_Gothic" . "unicode-bmp")
+                                    )
+(set-fontset-font (frame-parameter nil 'font)
+                  'katakana-jisx0201
+                  '("MeiryoKe_Gothic" . "unicode-bmp")
+                                    )
+(define-key global-map [auto] 'toggle-input-method)
+(define-key global-map [enlw] 'toggle-input-method)
+
+;; テンプレート設定
+(auto-insert-mode)
+(setq auto-insert-directory "~/.emacs.d/insert")
+(define-auto-insert "\\.rb" "ruby-template.rb")
+
+;; Key Binding
+; フレーム・バッファ移動のキーバインドを変更
+;(define-key global-map [(C tab)]   'next-buffer)
+;(define-key global-map [(C S tab)] 'previous-buffer)
+; C-x b bufname でバッファ指定移動(switch-to-buffer)
+; bufnameが存在しない場合、新規作成
+(define-key global-map [(C tab)]   'next-multiframe-window)
+(define-key global-map [(C S tab)] 'previous-multiframe-window)
+; 各メジャーモードへ移行するためのキーバインド
+(define-key global-map [f5 ?r] 'ruby-mode)
+(define-key global-map [f5 ?s] 'scheme-mode)
+; バックスペースをC-hへ変更
+(define-key global-map [(C h)] 'delete-backward-char)
+; 前ページの表示をC-zへ変更
+(define-key global-map [(C z)] 'scroll-down)
+
+;; 行番号ジャンプのキーバインドを追加
+;; C-@		set-mark-command
+(define-key global-map [(C ^)] 'goto-line)
+
+;; 折り返しトグルコマンド
+(define-key global-map (kbd "C-C l") 'toggle-truncate-lines)
+
+;; C-q C-i でタブ文字検索可能 C-q C-j, m などで改行文字も検索可能となる
+;; f1 b でキーバインド調査を行える
+;; 1ストロークのキーバインドの再設定ができそうなものをいかに列挙
+;; C-[ = ESC となるため、使用出来ない
+;; ^,. <apps>
+
+;; C-k		kill-line
+;; 他に、kill-whole-lineもある。こちらは、改行も含めて切り取るのではないか？
+
+;; C-x C-q で読み取り専用モードに移行
+
+;; emacsclientを使用するための設定
+(server-start)
+
+;; タブ幅を3に、インデントでタブを使用することを抑制する。
+(setq-default tab-width 3 indent-tabs-mode nil)
+
+;; バックアップファイルの保存場所を変更する。
+(add-to-list 'backup-directory-alist (cons ".*" (expand-file-name "~/.emacs.d/backup")))
+;; オートセーブファイルの保存場所を変更する。
+(add-to-list 'auto-save-file-name-transforms `(".*" ,(expand-file-name "~/.emacs.d/backup") t))
+
+;; 選択行をハイライトする設定
+;; 設定できる内容は、custom-face-attributes にある
+;; f1 v ↑ _-
+(global-hl-line-mode t)
+(defface hlline-face
+  '((((class color)
+      (background dark))
+     ;; (:background "dark state gray"))
+     (:background "gray20"))
+;;                  :underline "gray24"))
+    (((class color)
+      (background light))
+     (:background "azure2"))
+;;     (:background "white"))
+;;                  :underline "blue"))
+    (t ()))
+  "*Face used by hl-line.")
+(setq hl-line-face 'hlline-face)
+
+;; マウスホイールでのスクロール速度の設定
+(setq mouse-wheel-scroll-amount '(3 ((shift) . 10) ((control) . nil)))
+;; マウスホイールでのスクロールの加速をするかどうか
+(setq mouse-wheel-progressive-speed nil)
+
+;; スクロール行数を変更
+(setq scroll-conservatively 1)
+
+;; 対応する括弧をハイライト
+(show-paren-mode t)
+
+;; 行番号表示
+(global-linum-mode)
+
+;; 列番号をモードラインに表示
+(column-number-mode)
+
+;;; 起動時の画面はいらない
+(setq inhibit-startup-message t)
+
+;; タイトルバーにファイルのフルパスを表示する
+;; (multiple-frames "%b" ("" invocation-name "@" system-name))
+(setq frame-title-format "%b (%f)")
+
+;; ido.el
+;; バッファ切り替え、ファイル名入力を強化する
+(ido-mode 1)       ; コマンドがidoのものに置き換わる
+(ido-everywhere 1) ; バッファ名・ファイル名入力すべてがidoに置き換わる
+
+;; executable-findで外部コマンドの実行パスを調査する。
+;; (executable-find "openssl")
+
+;; 半透明にする。
+(when window-system
+  (set-frame-parameter nil 'alpha '80))
