@@ -28,9 +28,9 @@
 ;; ロードパス設定
 (add-to-load-path "site-lisp" "config")
 
+(load "my-init-global-key-map")
 (load "my-init-require")
 (load "my-init-prog-mode")
-(load "my-init-global-key-map")
 (load "my-init-looks")
 (load "my-init-others")
 

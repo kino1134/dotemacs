@@ -90,7 +90,7 @@
 
 ;; タイトルバーにファイルのフルパスを表示する
 ;; (multiple-frames "%b" ("" invocation-name "@" system-name))
-(setq frame-title-format "%b (%f)")
+(setq frame-title-format (format "%%b (%%f) - Emacs%s" emacs-version))
 
 ;; ツールバーを非表示にする
 (tool-bar-mode 0)
@@ -113,7 +113,20 @@
 ;; (setq default-directory "~/")
 
 ;; yes/no を y/n へ簡略化
-;; (fset 'yes-or-no-p 'y-or-n-p)
+(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; スクロール時のカーソル位置の維持
 (setq scroll-preserve-screen-position t)
+
+;; read-onlyと同時にview-modeにする
+(setq view-read-only t)
+
+;; 折り返されない最低幅を変更する
+;; デフォルトは50
+(setq truncate-partial-width-windows 10)
+
+;; scratchの初期メッセージを消去
+(setq initial-scratch-message "")
+
+;; ビープ音を消して画面を点滅させる
+(setq visible-bell t)

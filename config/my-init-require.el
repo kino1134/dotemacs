@@ -7,7 +7,6 @@
 (require-and-when 'auto-install
                   ;; (setq url-proxy-services '(("http" . "localhost:8080"))) 
                   (setq auto-install-directory "~/.emacs.d/site-lisp")
-                  (setq auto-install-use-wget nil)
                   ;; 起動時にEmacsWikiのページを補間候補に加える
                   (auto-install-update-emacswiki-package-name t)
                   ;; install-elisp.el互換モードにする
@@ -119,9 +118,6 @@
                   (define-key global-map (kbd "<f8>") 'goto-last-change)
                   (define-key global-map (kbd "S-<f8>") 'goto-last-change-reverse))
 
-;; sense-region.el
-;; (install-elisp "http://taiyaki.org/elisp/sense-region/src/sense-region.el")
-
 ;; emacsclientを使用するための設定
 (when window-system
   (require-and-when 'server
@@ -131,3 +127,47 @@
 ;; 前回編集時のカーソル位置を再現
 (require-and-when 'saveplace
                   (setq-default save-place t))
+
+;; paredit.el
+;; (install-elisp "http://mumble.net/~campbell/emacs/paredit.el")
+(require-and-when 'paredit
+                  (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+                  (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
+                  (add-hook 'lisp-mode-hook 'enable-paredit-mode)
+                  (add-hook 'ielm-mode-hook 'enable-paredit-mode))
+
+;; eldoc.el
+;; (install-elisp-from-emacswiki "eldoc-extension.el")
+(require-and-when 'eldoc-extension
+                  (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+                  (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+                  (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+                  (setq eldoc-idle-delay 0.2)
+                  (setq eldoc-minor-mode-string ""))
+;; fold-dwim.el
+;; (install-elisp "http://www.dur.ac.uk/p.j.heslin/Software/Emacs/Download/fold-dwim.el")
+;; (install-elisp-from-emacswiki "hideshowvis.el")
+(require-and-when 'hideshow
+                  (require 'fold-dwim)
+                  ;(require 'hideshowvis)
+                  (setq hs-allow-nesting t)
+                  (define-key global-map (kbd "<f7>") 'fold-dwim-toggle)
+                  (define-key global-map (kbd "<C-f7>") 'fold-dwim-hide-all)
+                  (define-key global-map (kbd "<C-S-f7>") 'fold-dwim-show-all)
+                  (define-key global-map (kbd "<S-f7>") 'hs-hide-level)
+                  (add-hook 'emacs-lisp-mode-hook '(lambda () (hs-minor-mode t)))
+                  (add-hook 'lisp-interaction-mode-hook '(lambda () (hs-minor-mode t)))
+                  (add-hook 'lisp-mode-hook '(lambda () (hs-minor-mode t)))
+                  (add-hook 'ruby-mode-hook '(lambda () (hs-minor-mode t)))
+                  ;(add-hook 'emacs-lisp-mode-hook 'hideshowvis-enable)
+                  ;(add-hook 'lisp-interaction-mode-hook 'hideshowvis-enable)
+                  ;(add-hook 'lisp-mode-hook 'hideshowvis-enable)
+                  ;(add-hook 'ruby-mode-hook 'hideshowvis-enable)
+                  ;(define-fringe-bitmap 'hideshowvis-hideable-marker [0 24 24 126 126 24 24 0])
+                  )
+
+;; jump.el
+;; (install-elisp-from-emacswiki "jump-dls.el")
+(require-and-when 'jump
+                  (define-key my-Q-key-map (kbd "j") 'jump-symbol-at-point)
+                  (define-key my-Q-key-map (kbd "C-j") 'jump-back))

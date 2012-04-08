@@ -2,7 +2,14 @@
 
 ;; -*- coding:utf-8 -*-
 
-;;; ruby-mode
+;; flymakeの見た目を変更する
+(require-and-when 'flymake
+;                  (set-face-background 'flymake-errline "Firebrick4")
+;                  (set-face-background 'flymake-warnline "DarkBlue")
+                  (set-face-background 'flymake-errline "red")
+                  (set-face-background 'flymake-warnline "blue"))
+
+;;; ruby-mode---------------------------------------------------------------------------
 ;; 標準のものではruby-electricがうまく動作しなかったため、
 ;; 以下のsvnから取得を行なっている
 ;; http://svn.ruby-lang.org/repos/ruby/trunk
@@ -25,11 +32,38 @@
   "run rubydb on program file in buffer *gud-file*.
 the directory containing file becomes the initial working directory
 and source-file directory for your debugger." t)
+;; rcodetools
+(require 'rcodetools)
+;; rsense
+;(setq rsense-home "D:\\rsense-0.3")
+;(require 'rsense)
 
 ;; マジックコメントの表記を修正する
 (add-to-list 'ruby-encoding-map '(japanese-cp932 . cp932))
 
-;;; scheme-mode
+;; Ruby用flymakeの設定
+(defun flymake-ruby-init ()
+  (list "ruby" (list "-wc" (flymake-init-create-temp-buffer-copy
+                            'flymake-create-temp-inplace))))
+(add-to-list 'flymake-allowed-file-name-masks
+             '("\\.rb\\'" flymake-ruby-init))
+(add-to-list 'flymake-err-line-patterns
+             '("\\(.*\\):\\([0-9]+\\): \\(.*\\)" 1 2 nil 3))
+(add-hook 'ruby-mode-hook '(lambda () (flymake-mode t)))
+
+;; Ruby用hideshowの設定
+(let ((ruby-mode-hs-info
+       '(ruby-mode
+         "class\\|module\\|def\\|if\\|unless\\|case\\|while\\|until\\|for\\|begin\\|do"
+         "end"
+         "#"
+         ruby-move-to-block
+         nil)))
+  (if (not (member ruby-mode-hs-info hs-special-modes-alist))
+      (setq hs-special-modes-alist
+            (cons ruby-mode-hs-info hs-special-modes-alist))))
+
+;;; scheme-mode---------------------------------------------------------------------------
 (modify-coding-system-alist 'process "gosh" '(utf-8 . utf-8))
 (setq scheme-program-name "gosh -i")
 (autoload 'scheme-mode "cmuscheme" "Major Mode For Scheme." t)
@@ -46,7 +80,6 @@ and source-file directory for your debugger." t)
           '(lambda ()
              (define-key scheme-mode-map
                "\C-cs" 'scheme-other-window)))
-
 (add-hook 'cmuscheme-load-hook
  '(lambda()
     (defun scheme-args-to-list (string)

@@ -16,6 +16,7 @@
 
 
 ;; フレーム移動のキーバインドを変更
+(define-key global-map (kbd "C-.") 'next-multiframe-window)
 (define-key global-map (kbd "C-<tab>") 'next-multiframe-window)
 (define-key global-map (kbd "C-S-<tab>") 'previous-multiframe-window)
 ;; 各メジャーモードへ移行するためのキーバインド
@@ -36,4 +37,25 @@
 
 ;; バッファ一覧を少し変更
 ;; 具体的に何が変わるかは、これから検証
-(define-key global-map (kbd "C-x C-b") 'bs-show)
+(define-key global-map (kbd "C-x C-b") 'buffer-menu)
+
+;; 行頭クリック時の動きを追加
+(define-key global-map (kbd "<left-margin> <mouse-1>") 'mouse-set-point)
+(define-key global-map (kbd "<left-margin> <down-mouse-1>") 'mouse-drag-region)
+
+;; 日付を挿入する関数
+(defun my-insert-date ()
+  (interactive)
+  (insert (format-time-string "%Y/%m/%d")))
+(defun my-insert-time ()
+  (interactive)
+  (insert (format-time-string "%H:%M:%S")))
+
+;; C-qをマイキーバインドにする
+(setq my-Q-key-map (make-sparse-keymap))
+(define-key global-map (kbd "C-q") my-Q-key-map)
+(define-key my-Q-key-map (kbd "C-q") 'quoted-insert)
+
+(define-key my-Q-key-map (kbd "C-d") 'my-insert-date)
+(define-key my-Q-key-map (kbd "C-t") 'my-insert-time)
+(define-key my-Q-key-map (kbd "C-SPC") 'auto-complete)
