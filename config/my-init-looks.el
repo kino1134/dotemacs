@@ -41,3 +41,6 @@
 
 ;; カーソルの形を変更する
 (add-to-list 'default-frame-alist '(cursor-type . bar))
+
+;; モードラインの色を変更する
+(set-face-background 'mode-line "YellowGreen")

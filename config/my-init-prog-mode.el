@@ -167,3 +167,12 @@ and source-file directory for your debugger." t)
 (put 'with-signal-handlers 'scheme-indent-function 1)
 (put 'with-locking-mutex 'scheme-indent-function 1)
 (put 'guard 'scheme-indent-function 1)
+
+
+;;; yatex-mode---------------------------------------------------------------------------
+(setq auto-mode-alist
+      (cons (cons "\\.tex$" 'yatex-mode) auto-mode-alist))
+(autoload 'yatex-mode "yatex" "Yet Another LaTeX mode" t)
+(setq dvi2-command "\"C:/Program Files/Adobe/Reader 10.0/Reader/AcroRd32.exe\"")
+;; (setq tex-command "xelatex")
+(add-to-list 'ac-modes 'yatex-mode)

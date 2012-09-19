@@ -7,11 +7,11 @@
 (setq auto-insert-directory "~/.emacs.d/insert")
 (define-auto-insert "\\.rb" "ruby-template.rb")
 
-;; デフォルト文字コードの設定
-(prefer-coding-system 'utf-8)
-
 ;; 日本語環境の設定
 (set-language-environment "Japanese")
+
+;; デフォルト文字コードの設定
+(prefer-coding-system 'utf-8)
 
 ;; Windowsの場合
 (when (eq window-system 'w32)

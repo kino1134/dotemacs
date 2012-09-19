@@ -1,4 +1,4 @@
-;;; my-init-require.el --- init.elからロードするパッケージ関連を読み込むファイル
+;; my-init-require.el --- init.elからロードするパッケージ関連を読み込むファイル
 
 ;; -*- coding:utf-8 -*-
 
@@ -47,13 +47,15 @@
                   (setq undo-limit 600000)
                   (setq undo-strong-limit 900000))
 
-;; jaspace.el
+;; jaspace.el	　
 ;; http://homepage3.nifty.com/satomii/software/elisp.ja.html
 ;; (install-elisp "http://homepage3.nifty.com/satomii/software/jaspace.el")
 (require-and-when 'jaspace
                   (setq jaspace-alternate-eol-string "\x24\n")
+                  (set-face-foreground 'jaspace-highlight-tab-face "brown")
                   (setq jaspace-highlight-tabs ?^)
-                  (add-to-list 'jaspace-modes 'ruby-mode))
+                  (add-to-list 'jaspace-modes 'ruby-mode)
+                  (add-hook 'find-file-hook 'jaspace-mode-on))
 
 ;; summarye.el
 ;; (install-elisp-from-emacswiki "summarye.el")
@@ -96,7 +98,7 @@
 (require-and-when 'recentf-ext
                   (setq recentf-max-saved-items 500)
                   ;(setq recentf-excude '("/TAGS$" "/var/tmp/")
-                  (define-key global-map (kbd "C-,") 'recentf-open-files))
+                  (define-key global-map (kbd "C-;") 'recentf-open-files))
 
 ;; bm.el
 ;; (install-elisp "http://cvs.savannah.gnu.org/viewvc/*checkout*/bm/bm/bm.el")
@@ -130,11 +132,11 @@
 
 ;; paredit.el
 ;; (install-elisp "http://mumble.net/~campbell/emacs/paredit.el")
-(require-and-when 'paredit
-                  (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-                  (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
-                  (add-hook 'lisp-mode-hook 'enable-paredit-mode)
-                  (add-hook 'ielm-mode-hook 'enable-paredit-mode))
+;; (require-and-when 'paredit
+;;                   (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+;;                   (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
+;;                   (add-hook 'lisp-mode-hook 'enable-paredit-mode)
+;;                   (add-hook 'ielm-mode-hook 'enable-paredit-mode))
 
 ;; eldoc.el
 ;; (install-elisp-from-emacswiki "eldoc-extension.el")
@@ -171,3 +173,25 @@
 (require-and-when 'jump
                   (define-key my-Q-key-map (kbd "j") 'jump-symbol-at-point)
                   (define-key my-Q-key-map (kbd "C-j") 'jump-back))
+
+;; smartchr.el
+;; (install-elisp "http://github.com/imakado/emacs-smartchr/raw/master/smartchr.el")
+(require-and-when 'smartchr
+                  (setq my-smartchr-key-map (make-sparse-keymap))
+                  (defun my-smartchr-set-key-map ()
+                    (local-set-key (kbd "(") (smartchr '("(`!!')" "(")))
+                    (local-set-key (kbd "[") (smartchr '("[`!!']" "[")))
+                    (local-set-key (kbd "\"") (smartchr '("\"`!!'\"" "\""))))
+                  (add-hook 'emacs-lisp-mode-hook 'my-smartchr-set-key-map)
+                  (add-hook 'lisp-interaction-mode-hook 'my-smartchr-set-key-map)
+                  (add-hook 'lisp-mode-hook 'my-smartchr-set-key-map)
+                  (add-hook 'ielm-mode-hook 'my-smartchr-set-key-map)
+                  (add-hook 'scheme-mode-hook 'my-smartchr-set-key-map))
+
+;; anything.el
+;; (auto-install-batch "anything")
+
+
+
+;; http://ruby-debug.rubyforge.org/svn/ruby-debug-0.10.5/emacs/
+(require 'rdebug)
