@@ -44,3 +44,6 @@
 
 ;; モードラインの色を変更する
 (set-face-background 'mode-line "YellowGreen")
+
+;; コメントの色を緑にする
+(set-face-foreground 'font-lock-comment-face "LawnGreen")

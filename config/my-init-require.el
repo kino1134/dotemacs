@@ -27,7 +27,8 @@
                   ;;(color-theme-aalto-light)
                   ;;(color-theme-hober)
                   ;;(color-theme-tty-dark)
-                  (color-theme-pok-wob))
+                  ;; (color-theme-pok-wob)
+                  (color-theme-taylor))
 
 ;; open-junk-file.el
 ;; (install-elisp-from-emacswiki open-junk-file.el)
@@ -195,3 +196,5 @@
 
 ;; http://ruby-debug.rubyforge.org/svn/ruby-debug-0.10.5/emacs/
 (require 'rdebug)
+
+;; (install-elisp-from-emacswiki "htmlize.el")

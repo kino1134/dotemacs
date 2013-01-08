@@ -23,6 +23,7 @@
 ;; ruby-electric
 (require 'ruby-electric)
 (add-hook 'ruby-mode-hook '(lambda () (ruby-electric-mode t)))
+(add-hook 'ruby-mode-hook '(lambda () (setq tab-width 2)))
 ;; ruby-style
 (require 'ruby-style)
 (add-hook 'c-mode-hook 'ruby-style-c-mode)
@@ -49,7 +50,7 @@ and source-file directory for your debugger." t)
              '("\\.rb\\'" flymake-ruby-init))
 (add-to-list 'flymake-err-line-patterns
              '("\\(.*\\):\\([0-9]+\\): \\(.*\\)" 1 2 nil 3))
-(add-hook 'ruby-mode-hook '(lambda () (flymake-mode t)))
+(add-hook 'ruby-mode-hook '(lambda () (when buffer-file-name (flymake-mode t))))
 
 ;; Ruby用hideshowの設定
 (let ((ruby-mode-hs-info
@@ -174,5 +175,10 @@ and source-file directory for your debugger." t)
       (cons (cons "\\.tex$" 'yatex-mode) auto-mode-alist))
 (autoload 'yatex-mode "yatex" "Yet Another LaTeX mode" t)
 (setq dvi2-command "\"C:/Program Files/Adobe/Reader 10.0/Reader/AcroRd32.exe\"")
-;; (setq tex-command "xelatex")
+(setq tex-command "platex --kanji=utf-8")
 (add-to-list 'ac-modes 'yatex-mode)
+
+;; C#-mode------------------------------------------------------------------------------------
+;; (install-elisp-from-emacswiki "csharp-mode.el")
+(autoload 'csharp-mode "csharp-mode" "Major mode for editing C# code." t)
+(setq auto-mode-alist (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
