@@ -3,11 +3,12 @@
 ;; -*- coding:utf-8 -*-
 
 ; フォント設定
-(set-face-attribute 'default nil
-                    :family "consolas"
-                    :height 120)
-(set-fontset-font nil 'japanese-jisx0208
-                  (font-spec :family "MeiryoKe_Gothic"))
+(when window-system
+  (set-face-attribute 'default nil
+                      :family "consolas"
+                      :height 120)
+  (set-fontset-font nil 'japanese-jisx0208
+                    (font-spec :family "MeiryoKe_Gothic")))
 ;; フォントの大きさを変更する
 ;; (setq face-font-rescale-alist
 ;;       '((".*consolas*." . 1.0)
@@ -32,6 +33,11 @@
   "*Face used by hl-line.")
 (setq hl-line-face 'hlline-face)
 
+;; anythingの見た目を変更する
+(setq anything-selection-face 'hlline-face)
+(set-face-background 'anything-header "yellow3")
+(set-face-foreground 'anything-header "brown")
+
 ;; 半透明にする。
 (when window-system
   (add-to-list 'default-frame-alist '(alpha . 80)))
@@ -39,8 +45,9 @@
 ;; 行間を指定
 (setq-default line-spcing 0.1)
 
-;; カーソルの形を変更する
+;; カーソルの形、色を変更する
 (add-to-list 'default-frame-alist '(cursor-type . bar))
+(add-to-list 'default-frame-alist '(cursor-color . "yellow"))
 
 ;; モードラインの色を変更する
 (set-face-background 'mode-line "YellowGreen")

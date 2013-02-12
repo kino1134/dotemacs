@@ -182,3 +182,6 @@ and source-file directory for your debugger." t)
 ;; (install-elisp-from-emacswiki "csharp-mode.el")
 (autoload 'csharp-mode "csharp-mode" "Major mode for editing C# code." t)
 (setq auto-mode-alist (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
+
+;; sql-mode------------------------------------------------------------------------------
+(add-hook 'sql-mode-hook '(lambda () (setq tab-width 4 indent-tabs-mode t)))

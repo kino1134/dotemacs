@@ -18,6 +18,7 @@
   (set-file-name-coding-system 'cp932)
   (setq locale-coding-system 'cp932)
   (setq w32-enable-synthesized-fonts t)
+  (setq default-process-coding-system '(utf-8 . cp932))
 
   ;; 標準IMEの設定
   (setq default-input-method "W32-IME")
@@ -130,3 +131,11 @@
 
 ;; ビープ音を消して画面を点滅させる
 (setq visible-bell t)
+
+;; diredバッファで編集を行えるようにする
+(define-key dired-mode-map (kbd "r") 'wdired-change-to-wdired-mode)
+
+;; 時計を表示
+;; (setq display-time-string-forms '((format "%02d/%02s(%s) %s:%s" (string-to-number month) (string-to-number day) dayname 24-hours minutes)))
+(setq display-time-string-forms '((format-time-string "%m/%d(%a) %H:%M")))
+(display-time-mode t)

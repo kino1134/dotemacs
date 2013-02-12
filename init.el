@@ -26,7 +26,7 @@
 (require 'cl)
 
 ;; ロードパス設定
-(add-to-load-path "site-lisp" "config")
+(add-to-load-path "site-lisp" "config" "elpa")
 
 (load "my-init-global-key-map")
 (load "my-init-require")
@@ -80,5 +80,3 @@
 ;; When you're done:
 
 ;;   Continue
-
-

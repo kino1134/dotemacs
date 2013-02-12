@@ -45,6 +45,10 @@
 (define-key global-map (kbd "<left-margin> <mouse-1>") 'mouse-set-point)
 (define-key global-map (kbd "<left-margin> <down-mouse-1>") 'mouse-drag-region)
 
+;; 5ボタンマウス用の設定
+(define-key global-map (kbd "<mouse-4>") 'previous-buffer)
+(define-key global-map (kbd "<mouse-5>") 'next-buffer)
+
 ;; 日付を挿入する関数
 (defun my-insert-date ()
   (interactive)
@@ -56,33 +60,44 @@
 ;; C-qをマイキーバインドにする
 (setq my-Q-key-map (make-sparse-keymap))
 (define-key global-map (kbd "C-q") my-Q-key-map)
+
 ;; 特殊文字の挿入
 (define-key my-Q-key-map (kbd "C-q") 'quoted-insert)
 
-(define-key my-Q-key-map (kbd "C-d") 'my-insert-date)
-(define-key my-Q-key-map (kbd "C-t") 'my-insert-time)
+;; 日付、時間の挿入
+(define-key my-Q-key-map (kbd "C-;") 'my-insert-date)
+(define-key my-Q-key-map (kbd "C-:") 'my-insert-time)
+
+;; 補完モードの実行
 (define-key my-Q-key-map (kbd "C-SPC") 'auto-complete)
+
 ;; 行番号ジャンプのキーバインドを追加
 (define-key my-Q-key-map (kbd "C-g") 'goto-line)
 ;; 文字の入れ替え C-tから移す
 (define-key my-Q-key-map (kbd "C-t") 'transpose-chars)
 
+;; スクリプト実行を行う処理
+(define-key my-Q-key-map (kbd "C-e") 'executable-interpret)
 
 (defun shell-command-on-buffer (command &optional replace error-buffer display-error-buffer)
   (interactive
    (list
-    (read-shell-command
-     "Shell command: " nil nil
-     (let ((filename
-            (cond
-             (buffer-file-name)
-             ((eq major-mode 'dired-mode)
-              (dired-get-filename nil t)))))
-       (and filename (file-relative-name filename))))
+    (read-shell-command "Shell command: " (car shell-command-history) nil)
     current-prefix-arg
-    shell-command-default-error-buffer))
+    shell-command-default-error-buffer
+    t))
   (shell-command-on-region (point-min) (point-max) command
                            nil replace error-buffer display-error-buffer)
   (pop-to-buffer "*Shell Command Output*"))
-(define-key my-Q-key-map (kbd "C-e") 'shell-command-on-buffer)
-(define-key my-Q-key-map (kbd "C-e") (lambda () (interactive) (shell-command-on-buffer "ruby")))
+;(define-key my-Q-key-map (kbd "C-e") 'shell-command-on-buffer)
+;(define-key my-Q-key-map (kbd "C-e") (lambda () (interactive) (shell-command-on-buffer "ruby")))
+;(define-key my-Q-key-map (kbd "e") (lambda () (interactive) (shell-command (concat "ruby " (buffer-file-name)))))
+
+(defun create-tagfile (dir)
+  (interactive
+   (list
+    (read-string "Root Directory: " default-directory)))
+  (let ((work-dir default-directory))
+    (cd dir)
+    (async-shell-command "ctags -e -R")
+    (cd work-dir)))

@@ -1,5 +1,4 @@
 ;; my-init-require.el --- init.elからロードするパッケージ関連を読み込むファイル
-
 ;; -*- coding:utf-8 -*-
 
 ;; auto-install.el
@@ -14,11 +13,25 @@
                   ;; editff関連バッファを１つのフレームにまとめる
                   (setq ediff-window-setup-function 'ediff-setup-windows-plain))
 
+;; ELPA
+;; (install-elisp "http://tromey.com/elpa/package-install.el")
+;;; This was installed by package-install.el.
+;;; This provides support for the package system and
+;;; interfacing with ELPA, the package archive.
+;;; Move this code earlier if you want to reference
+;;; packages in your .emacs.
+(when
+    (load
+     (expand-file-name "~/.emacs.d/elpa/package.el"))
+  (package-initialize))
+
 ;; auto-complete.el
 ;; http://cx4a.org/software/auto-complete/index.ja.html
 (require-and-when 'auto-complete-config
                   (add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/ac-dict")
-                  (ac-config-default))
+                  (ac-config-default)
+                  (add-to-list 'ac-modes 'sql-mode)
+                  (add-to-list 'ac-modes 'yaml-mode))
 
 ;; color-theme.el
 ;; http://www.nongnu.org/color-theme/
@@ -99,7 +112,7 @@
 (require-and-when 'recentf-ext
                   (setq recentf-max-saved-items 500)
                   ;(setq recentf-excude '("/TAGS$" "/var/tmp/")
-                  (define-key global-map (kbd "C-;") 'recentf-open-files))
+                  (define-key global-map (kbd "C-,") 'recentf-open-files))
 
 ;; bm.el
 ;; (install-elisp "http://cvs.savannah.gnu.org/viewvc/*checkout*/bm/bm/bm.el")
@@ -118,8 +131,8 @@
 ;; goto-chg.el
 ;; (install-elisp-from-emacswiki "goto-chg.el")
 (require-and-when 'goto-chg
-                  (define-key global-map (kbd "<f8>") 'goto-last-change)
-                  (define-key global-map (kbd "S-<f8>") 'goto-last-change-reverse))
+                  (define-key global-map (kbd "C-<") 'goto-last-change)
+                  (define-key global-map (kbd "C->") 'goto-last-change-reverse))
 
 ;; emacsclientを使用するための設定
 (when window-system
@@ -147,17 +160,35 @@
                   (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
                   (setq eldoc-idle-delay 0.2)
                   (setq eldoc-minor-mode-string ""))
+
 ;; fold-dwim.el
+;; (install-elisp "http://www.rubyist.net/~rubikitch/archive/fold-dwim.el")
 ;; (install-elisp "http://www.dur.ac.uk/p.j.heslin/Software/Emacs/Download/fold-dwim.el")
 ;; (install-elisp-from-emacswiki "hideshowvis.el")
 (require-and-when 'hideshow
                   (require 'fold-dwim)
                   ;(require 'hideshowvis)
                   (setq hs-allow-nesting t)
-                  (define-key global-map (kbd "<f7>") 'fold-dwim-toggle)
-                  (define-key global-map (kbd "<C-f7>") 'fold-dwim-hide-all)
-                  (define-key global-map (kbd "<C-S-f7>") 'fold-dwim-show-all)
-                  (define-key global-map (kbd "<S-f7>") 'hs-hide-level)
+                  (defun toggle-selective-display (col)
+                    ""
+                    (interactive
+                     (let (col)
+                       (save-excursion
+                         (beginning-of-line)
+                         (skip-chars-forward " \t")
+                         (setq col (current-column))
+                         (list (read-number "Toggle Indent: " col)))))
+                    (if (zerop col)
+                        (hs-hide-level nil)
+                      (hs-hide-level col)))
+                  (define-key global-map (kbd "C-;") 'fold-dwim-toggle-all)
+                  ;; (define-key global-map (kbd "C-.") 'fold-dwim-toggle)
+                  (define-key global-map (kbd "C-:") 'hs-toggle-hiding)
+                  (define-key global-map (kbd "C-]") 'hs-hide-level)
+                  ;; (define-key global-map (kbd "<f7>") 'fold-dwim-toggle)
+                  ;; (define-key global-map (kbd "<C-f7>") 'fold-dwim-hide-all)
+                  ;; (define-key global-map (kbd "<C-S-f7>") 'fold-dwim-show-all)
+                  ;; (define-key global-map (kbd "<S-f7>") 'hs-hide-level)
                   (add-hook 'emacs-lisp-mode-hook '(lambda () (hs-minor-mode t)))
                   (add-hook 'lisp-interaction-mode-hook '(lambda () (hs-minor-mode t)))
                   (add-hook 'lisp-mode-hook '(lambda () (hs-minor-mode t)))
@@ -171,7 +202,7 @@
 
 ;; jump.el
 ;; (install-elisp-from-emacswiki "jump-dls.el")
-(require-and-when 'jump
+(require-and-when 'jump-dls
                   (define-key my-Q-key-map (kbd "j") 'jump-symbol-at-point)
                   (define-key my-Q-key-map (kbd "C-j") 'jump-back))
 
@@ -191,10 +222,22 @@
 
 ;; anything.el
 ;; (auto-install-batch "anything")
-
-
+(require 'anything-startup)
+;; idoと共存させる
+(anything-read-string-mode 0)
 
 ;; http://ruby-debug.rubyforge.org/svn/ruby-debug-0.10.5/emacs/
 (require 'rdebug)
 
 ;; (install-elisp-from-emacswiki "htmlize.el")
+
+;; Ruby on Rails IDE
+(require 'rinari)
+(require 'rhtml-mode)
+(add-to-list 'auto-mode-alist '("\\.rhtml$" . rhtml-mode))
+(add-hook 'rhtml-mode-hook '(lambda () (rinari-launch)))
+(setq rinari-tags-file-name "TAGS")
+
+;; (install-elisp "http://tweedle-dee.org/svn/emacs.d/site-lisp/yaml-mode.el")
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\(\\.yml$\\|\\.yaml$\\)" . yaml-mode))

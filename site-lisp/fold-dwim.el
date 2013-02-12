@@ -1,4 +1,4 @@
-;;; fold-dwim.el -- Unified user interface for Emacs folding modes
+;; fold-dwim.el -- Unified user interface for Emacs folding modes
 ;;
 ;; Copyright (C) 2004 P J Heslin
 ;;
@@ -166,6 +166,9 @@
 (make-variable-buffer-local
  'fold-dwim-toggle-selective-display)
 
+(defvar fold-dwim-hidden-all-p nil)
+(make-variable-buffer-local 'fold-dwim-hidden-all-p)
+
 (defun fold-dwim-maybe-recenter ()
   "It's annoyingly frequent that hiding a fold will leave you
 with point on the top or bottom line of the screen, looking at
@@ -205,7 +208,8 @@ the top or bottom of the screen"
         (nxml-hide-all-text-content))
       (when (and (boundp 'folding-mode) folding-mode)
         (folding-whole-buffer))))
-  (fold-dwim-maybe-recenter))
+  (fold-dwim-maybe-recenter)
+  (setq fold-dwim-hidden-all-p t))
 
 (defun fold-dwim-show-all ()
   "Show all folds of various kinds in the buffer or region"
@@ -225,7 +229,8 @@ the top or bottom of the screen"
       (when (and (boundp 'folding-mode) folding-mode)
         (folding-open-buffer))
       (when fold-dwim-toggle-selective-display
-        (set-selective-display 'nil)))))
+        (set-selective-display 'nil))))
+  (setq fold-dwim-hidden-all-p nil))
   
 (defun fold-dwim-hide ()
   "Hide one item"
@@ -321,6 +326,12 @@ at the cursor."
       (unless (fold-dwim-show)
         (fold-dwim-hide)))))
     
+(defun fold-dwim-toggle-all ()
+  "If text are hidden by fold-dwim-hide-all, try fold-dwim-show-all and vice versa."
+  (interactive)
+  (if fold-dwim-hidden-all-p
+      (fold-dwim-show-all)
+    (fold-dwim-hide-all)))
 
 (defun fold-dwim-auctex-env-or-macro ()
   (let ((type (cond
