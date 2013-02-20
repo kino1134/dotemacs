@@ -3,14 +3,14 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "inflections" "inflections.el" (20748 61690))
+;;;### (autoloads nil "inflections" "inflections.el" (20767 8873))
 ;;; Generated autoloads from inflections.el
 
 
 
 ;;;***
 
-;;;### (autoloads nil nil ("inflections-pkg.el") (20748 61691 28000))
+;;;### (autoloads nil nil ("inflections-pkg.el") (20767 8873 800000))
 
 ;;;***
 

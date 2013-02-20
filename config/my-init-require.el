@@ -29,9 +29,9 @@
 ;; http://cx4a.org/software/auto-complete/index.ja.html
 (require-and-when 'auto-complete-config
                   (add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/ac-dict")
-                  (ac-config-default)
                   (add-to-list 'ac-modes 'sql-mode)
-                  (add-to-list 'ac-modes 'yaml-mode))
+                  (add-to-list 'ac-modes 'yaml-mode)
+                  (ac-config-default))
 
 ;; color-theme.el
 ;; http://www.nongnu.org/color-theme/

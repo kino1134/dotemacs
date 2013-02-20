@@ -33,8 +33,9 @@
   "run rubydb on program file in buffer *gud-file*.
 the directory containing file becomes the initial working directory
 and source-file directory for your debugger." t)
-;; rcodetools
-(require 'rcodetools)
+(add-hook 'ruby-mode-hook
+          (lambda ()
+            (setq ac-sources (append '(ac-source-rcodetools) ac-sources))))
 ;; rsense
 ;(setq rsense-home "D:\\rsense-0.3")
 ;(require 'rsense)
