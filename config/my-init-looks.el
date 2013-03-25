@@ -8,6 +8,8 @@
                       :family "consolas"
                       :height 120)
   (set-fontset-font nil 'japanese-jisx0208
+                    (font-spec :family "MeiryoKe_Gothic"))
+  (set-fontset-font nil 'katakana-jisx0201
                     (font-spec :family "MeiryoKe_Gothic")))
 ;; フォントの大きさを変更する
 ;; (setq face-font-rescale-alist
@@ -51,6 +53,7 @@
 
 ;; モードラインの色を変更する
 (set-face-background 'mode-line "YellowGreen")
-
 ;; コメントの色を緑にする
 (set-face-foreground 'font-lock-comment-face "LawnGreen")
+;; 背景色を少し薄くする
+(set-face-background 'default "gray15")

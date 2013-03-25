@@ -4,10 +4,10 @@
 ;; auto-install.el
 ;; http://www.emacswiki.org/emacs/download/auto-install.el
 (require-and-when 'auto-install
-                  ;; (setq url-proxy-services '(("http" . "localhost:8080"))) 
                   (setq auto-install-directory "~/.emacs.d/site-lisp")
                   ;; 起動時にEmacsWikiのページを補間候補に加える
-                  (auto-install-update-emacswiki-package-name t)
+                  (if (auto-install-use-wget-p)
+                      (auto-install-update-emacswiki-package-name t))
                   ;; install-elisp.el互換モードにする
                   (auto-install-compatibility-setup)
                   ;; editff関連バッファを１つのフレームにまとめる
