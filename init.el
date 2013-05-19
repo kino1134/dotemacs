@@ -26,7 +26,7 @@
 (require 'cl)
 
 ;; プロキシサーバの設定を行う
-;; (setq url-proxy-services '(("http" . "localhost:8080"))) 
+;; (setq url-proxy-services '(("http" . "localhost:8080")))
 
 ;; ロードパス設定
 (add-to-load-path "site-lisp" "config" "elpa")

@@ -47,7 +47,7 @@
 ;; (install-elisp-from-emacswiki open-junk-file.el)
 (require-and-when 'open-junk-file
                   (setq open-junk-file-format "~/junk/%Y%m%d_%H%M%S."))
- 
+
 ;; maxframe.el
 ;; http://files.emacsblog.org/ryan/elisp/maxframe.el
 (require-and-when 'maxframe

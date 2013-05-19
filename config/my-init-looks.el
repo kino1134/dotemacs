@@ -56,4 +56,8 @@
 ;; コメントの色を緑にする
 (set-face-foreground 'font-lock-comment-face "LawnGreen")
 ;; 背景色を少し薄くする
-(set-face-background 'default "gray15")
+;(set-face-background 'default "gray15")
+(custom-set-faces
+ '(default ((t
+             (:background "gray15")))))
+
