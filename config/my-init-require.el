@@ -265,3 +265,29 @@
 ;; (install-elisp "http://tweedle-dee.org/svn/emacs.d/site-lisp/yaml-mode.el")
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\(\\.yml$\\|\\.yaml$\\)" . yaml-mode))
+
+;; git clone git://github.com/emacsmirror/multiple-cursors.git
+(require 'multiple-cursors)
+(define-key my-Q-key-map (kbd "C-c") 'mc/edit-lines)
+(define-key my-Q-key-map (kbd "C-a") 'mc/mark-all-like-this)
+(define-key my-Q-key-map (kbd "C-p") 'mc/mark-previous-like-this)
+(define-key my-Q-key-map (kbd "C-n") 'mc/mark-next-like-this)
+(define-key my-Q-key-map (kbd "RET") 'mc/mark-more-like-this-extended)
+
+;; (shell-command "git clone git://github.com/magnars/expand-region.el.git")
+(require-and-when 'expand-region
+                  (define-key global-map (kbd "C-@") 'er/expand-region)
+                  (define-key global-map (kbd "C-`") 'er/contract-region))
+
+;; (auto-install-from-emacswiki "smartrep.el")
+(require-and-when 'smartrep
+                  (smartrep-define-key global-map "C-q"
+                    '(("C-n" . 'mc/mark-next-like-this)
+                      ("C-p" . 'mc/mark-previous-like-this))))
+
+(require 'rsense)
+(setq rsense-home "C:\\rsense-0.3")
+(add-hook 'ruby-mode-hook
+          (lambda ()
+            (add-to-list 'ac-sources 'ac-source-rsense-method)
+            (add-to-list 'ac-sources 'ac-source-rsense-constant)))

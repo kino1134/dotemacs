@@ -58,7 +58,7 @@
   (insert (format-time-string "%H:%M:%S")))
 
 ;; C-qをマイキーバインドにする
-(setq my-Q-key-map (make-sparse-keymap))
+(defvar my-Q-key-map (make-sparse-keymap) "My original keymap binded to C-q.")
 (define-key global-map (kbd "C-q") my-Q-key-map)
 
 ;; 特殊文字の挿入
