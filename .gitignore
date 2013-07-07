@@ -2,3 +2,5 @@
 /auto-save-list/*
 /backup/*
 /server/*
+
+/.mc-lists.el
