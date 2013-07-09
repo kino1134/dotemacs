@@ -79,6 +79,19 @@
 ;; スクリプト実行を行う処理
 (define-key my-Q-key-map (kbd "C-e") 'executable-interpret)
 
+(add-hook 'ruby-mode-hook
+          (lambda ()
+            (define-key ruby-mode-map (kbd "C-q r")
+              (lambda ()
+                (interactive)
+                (executable-interpret (format "rdefs -e %s" (buffer-file-name)))
+                (switch-to-buffer-other-window "*interpretation*")
+                ;; (set (make-local-variable 'font-lock-defaults) '((ruby-font-lock-keywords) nil nil))
+                (set (make-local-variable 'font-lock-keywords) (append (compilation-mode-font-lock-keywords) ruby-font-lock-keywords))
+                ;; (set (make-local-variable 'font-lock-syntax-table) ruby-font-lock-syntax-table)
+                ;; (set (make-local-variable 'font-lock-syntactic-keywords) ruby-font-lock-syntactic-keywords)
+                ))))
+
 (defun shell-command-on-buffer (command &optional replace error-buffer display-error-buffer)
   (interactive
    (list
