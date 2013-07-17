@@ -14,16 +14,10 @@
                   (setq ediff-window-setup-function 'ediff-setup-windows-plain))
 
 ;; ELPA
-;; (install-elisp "http://tromey.com/elpa/package-install.el")
-;;; This was installed by package-install.el.
-;;; This provides support for the package system and
-;;; interfacing with ELPA, the package archive.
-;;; Move this code earlier if you want to reference
-;;; packages in your .emacs.
-(when
-    (load
-     (expand-file-name "~/.emacs.d/elpa/package.el"))
-  (package-initialize))
+(require-and-when 'package
+                  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+                  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+                  (package-initialize))
 
 ;; auto-complete.el
 ;; http://cx4a.org/software/auto-complete/index.ja.html
@@ -232,17 +226,34 @@
 
 ;; smartchr.el
 ;; (install-elisp "http://github.com/imakado/emacs-smartchr/raw/master/smartchr.el")
-(require-and-when 'smartchr
-                  (setq my-smartchr-key-map (make-sparse-keymap))
-                  (defun my-smartchr-set-key-map ()
-                    (local-set-key (kbd "(") (smartchr '("(`!!')" "(")))
-                    (local-set-key (kbd "[") (smartchr '("[`!!']" "[")))
-                    (local-set-key (kbd "\"") (smartchr '("\"`!!'\"" "\""))))
-                  (add-hook 'emacs-lisp-mode-hook 'my-smartchr-set-key-map)
-                  (add-hook 'lisp-interaction-mode-hook 'my-smartchr-set-key-map)
-                  (add-hook 'lisp-mode-hook 'my-smartchr-set-key-map)
-                  (add-hook 'ielm-mode-hook 'my-smartchr-set-key-map)
-                  (add-hook 'scheme-mode-hook 'my-smartchr-set-key-map))
+;; (require-and-when 'smartchr
+;;                   (setq my-smartchr-key-map (make-sparse-keymap))
+;;                   (defun my-smartchr-set-key-map ()
+;;                     (local-set-key (kbd "(") (smartchr '("(`!!')" "(")))
+;;                     (local-set-key (kbd "[") (smartchr '("[`!!']" "[")))
+;;                     (local-set-key (kbd "\"") (smartchr '("\"`!!'\"" "\""))))
+;;                   (add-hook 'emacs-lisp-mode-hook 'my-smartchr-set-key-map)
+;;                   (add-hook 'lisp-interaction-mode-hook 'my-smartchr-set-key-map)
+;;                   (add-hook 'lisp-mode-hook 'my-smartchr-set-key-map)
+;;                   (add-hook 'ielm-mode-hook 'my-smartchr-set-key-map)
+;;                   (add-hook 'scheme-mode-hook 'my-smartchr-set-key-map))
+;; key-combo.el
+(require 'key-combo)
+(key-combo-define global-map (kbd "(") '("(`!!')"))
+(global-key-combo-mode t)
+(setq my-key-combo-common-list
+      '(("(" . ("(`!!')"))
+        ("()" . "()")
+        ("[" . ("[`!!']"))
+        ("[]" . "[]")
+        ("\"" . ("\"`!!'\""))
+        ("\"\"" . "\"\"")
+        ("'" . ("'`!!''"))
+        ("''" . "''")
+        ))
+(dolist (elt my-key-combo-common-list)
+  (key-combo-define global-map (read-kbd-macro (car elt)) (cdr elt))
+  )
 
 ;; anything.el
 ;; (auto-install-batch "anything")
@@ -267,23 +278,25 @@
 (add-to-list 'auto-mode-alist '("\\(\\.yml$\\|\\.yaml$\\)" . yaml-mode))
 
 ;; git clone git://github.com/emacsmirror/multiple-cursors.git
+(setq mc/list-file "~/.emacs.d/config/.mc-lists.el")
 (require 'multiple-cursors)
 (define-key my-Q-key-map (kbd "C-c") 'mc/edit-lines)
 (define-key my-Q-key-map (kbd "C-a") 'mc/mark-all-like-this)
 (define-key my-Q-key-map (kbd "C-p") 'mc/mark-previous-like-this)
 (define-key my-Q-key-map (kbd "C-n") 'mc/mark-next-like-this)
 (define-key my-Q-key-map (kbd "RET") 'mc/mark-more-like-this-extended)
+(define-key mc/keymap (kbd "C-z") 'mc/cycle-backward)
 
 ;; (shell-command "git clone git://github.com/magnars/expand-region.el.git")
 (require-and-when 'expand-region
-                  (define-key global-map (kbd "C-@") 'er/expand-region)
-                  (define-key global-map (kbd "C-`") 'er/contract-region))
+                 (define-key global-map (kbd "C-@") 'er/expand-region)
+                 (define-key global-map (kbd "C-`") 'er/contract-region))
 
 ;; (auto-install-from-emacswiki "smartrep.el")
-(require-and-when 'smartrep
-                  (smartrep-define-key global-map "C-q"
-                    '(("C-n" . 'mc/mark-next-like-this)
-                      ("C-p" . 'mc/mark-previous-like-this))))
+;; (require-and-when 'smartrep
+;;                   (smartrep-define-key global-map "C-q"
+;;                     '(("C-n" . 'mc/mark-next-like-this)
+;;                       ("C-p" . 'mc/mark-previous-like-this))))
 
 (require 'rsense)
 (setq rsense-home "C:\\rsense-0.3")
@@ -291,3 +304,22 @@
           (lambda ()
             (add-to-list 'ac-sources 'ac-source-rsense-method)
             (add-to-list 'ac-sources 'ac-source-rsense-constant)))
+
+;; https://github.com/aharisu/emacs-gdev
+(require 'gdev)
+(setq gdev:root-dir "~/.emacs.d/site-lisp/emacs-gdev")
+(require 'goshcomp)
+;(require 'gosh-anything)
+(add-hook 'scheme-mode-hook
+          (lambda ()
+            (setq ac-sources (append goshcomp:all-source ac-sources))
+            ;(define-key scheme-mode-map (kbd "C-c g k") 'ginfo-with-word-anything)
+            (define-key scheme-mode-map (kbd "C-c 0") 'gdev:close-ginfo)
+            (define-key scheme-mode-map (kbd "C-c C-n") 'gdev:scroll-up-ginfo)
+            (define-key scheme-mode-map (kbd "C-c C-p") 'gdev:scroll-down-ginfo)
+            (define-key scheme-mode-map (kbd "C-c C-j")
+              (lambda ()
+                (interactive)
+                (gdev:gosh-goto-define (symbol-name (symbol-at-point)) 'v)))
+            ;(setq jump-jumpers (append `(("gauche" ,(lambda (sym) (gdev:gosh-goto-define sym 'h)))) jump-jumpers))
+            ))

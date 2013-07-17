@@ -76,7 +76,10 @@ and source-file directory for your debugger." t)
   (interactive)
   (switch-to-buffer-other-window
    (get-buffer-create "*scheme*"))
-  (run-scheme scheme-program-name))
+  (run-scheme scheme-program-name)
+  (auto-complete-mode)
+  (my-smartchr-set-key-map)
+  )
 
 (add-hook 'scheme-mode-hook
           '(lambda ()
