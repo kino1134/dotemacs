@@ -34,6 +34,7 @@
 (load "my-init-global-key-map")
 (load "my-init-require")
 (load "my-init-prog-mode")
+(load "my-init-tex")
 (load "my-init-looks")
 (load "my-init-others")
 

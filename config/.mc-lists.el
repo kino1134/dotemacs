@@ -5,6 +5,9 @@
       '(
         cua-delete-region
         cua-paste
+        org-force-self-insert
+        org-self-insert-command
+        org-yank
         ))
 
 (setq mc/cmds-to-run-once
@@ -15,6 +18,7 @@
         forward-char
         hs-toggle-hiding
         next-line
+        org-export
         previous-line
         seq-end
         seq-home
