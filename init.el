@@ -3,7 +3,7 @@
 ;; Emacs 23より前のバージョンの場合
 ;; 設定を追加
 (when (< emacs-major-version 23)
-  (defvar user-emacs-directory "~/.emacs.d"))
+  (defvar user-emacs-directory "~/.emacs.d/"))
 
 ;; load-pathを追加する関数を定義
 (defun add-to-load-path (&rest paths)

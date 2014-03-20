@@ -44,16 +44,19 @@
 
 ;; maxframe.el
 ;; http://files.emacsblog.org/ryan/elisp/maxframe.el
-(require-and-when 'maxframe
-                  (add-hook 'window-setup-hook 'maximize-frame t))
+(if (eq system-type 'darwin)
+    (add-to-list 'default-frame-alist '(fullscreen . maximized))
+  (require-and-when 'maxframe
+                    (add-hook 'window-setup-hook 'maximize-frame t)))
 
 ;; redo+.el
 ;; (install-elisp-from-emacswiki redo+.el)
-(require-and-when 'redo+
-                  (global-set-key (kbd "C-\\") 'redo)
-                  (setq undo-no-redo t)
-                  (setq undo-limit 600000)
-                  (setq undo-strong-limit 900000))
+(unless (eq system-type 'darwin)
+  (require-and-when 'redo+
+		    (global-set-key (kbd "C-\\") 'redo)
+		    (setq undo-no-redo t)
+		    (setq undo-limit 600000)
+		    (setq undo-strong-limit 900000)))
 
 ;; jaspace.el	　
 ;; http://homepage3.nifty.com/satomii/software/elisp.ja.html
@@ -279,7 +282,7 @@
   (local-set-key (kbd ")")
                  (lambda (arg)
                    (interactive "P")
-                   (if (looking-at (string last-command-char))
+                   (if (looking-at (string last-command-event))
                        (forward-char 1)
                      (self-insert-command (prefix-numeric-value arg)))))
   (local-set-key (kbd "[")
@@ -295,7 +298,7 @@
   (local-set-key (kbd "]")
                  (lambda (arg)
                    (interactive "P")
-                   (if (looking-at (string last-command-char))
+                   (if (looking-at (string last-command-event))
                        (forward-char 1)
                      (self-insert-command (prefix-numeric-value arg)))))
   ;(key-combo-define-local (kbd "(") '("(`!!')"))
@@ -341,9 +344,9 @@
 (define-key mc/keymap (kbd "C-z") 'mc/cycle-backward)
 
 ;; (shell-command "git clone git://github.com/magnars/expand-region.el.git")
-(require-and-when 'expand-region
-                 (define-key global-map (kbd "C-@") 'er/expand-region)
-                 (define-key global-map (kbd "C-`") 'er/contract-region))
+;; (require-and-when 'expand-region
+;;                  (define-key global-map (kbd "C-@") 'er/expand-region)
+;;                  (define-key global-map (kbd "C-`") 'er/contract-region))
 
 ;; (auto-install-from-emacswiki "smartrep.el")
 ;; (require-and-when 'smartrep
@@ -382,5 +385,5 @@
                   (global-undo-tree-mode))
 
 ;; (install-elisp "http://coderepos.org/share/browser/lang/elisp/widen-window-mode/trunk/widen-window.el?format=txt")
-(require-and-when 'widen-window
-                  (global-widen-window-mode t))
+;; (require-and-when 'widen-window
+;;                   (global-widen-window-mode t))

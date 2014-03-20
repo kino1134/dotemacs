@@ -58,6 +58,22 @@
   ;; IMEの初期化
   (w32-ime-initialize))
 
+;; Macの場合
+(when (eq system-type 'darwin)
+  ;; ファイル名の設定
+  (require 'ucs-normalize)
+  (setq file-name-coding-system 'utf-8-hfs)
+  (setq locale-coding-system 'utf-8-hfs)
+  ;; IMEの設定
+  (mac-input-method-mode t)
+  ;(setq default-input-method "MacOSX")
+  ;(mac-set-input-method-parameter "com.google.5inputmethod.Japanese.base" `title "あ")
+  (mac-set-input-method-parameter "com.google.inputmethod.Japanese.base" `cursor-color "red")
+  (mac-set-input-method-parameter "com.google.inputmethod.Japanese.Roman" `cursor-color "yellow")
+  (mac-input-method-update "com.google.inputmethod.Japanese.base")
+  (mac-translate-from-yen-to-backslash)
+)
+
 ;; ido.el
 ;; バッファ切り替え、ファイル名入力を強化する
 (ido-mode 1)       ; コマンドがidoのものに置き換わる
@@ -139,3 +155,16 @@
 ;; (setq display-time-string-forms '((format "%02d/%02s(%s) %s:%s" (string-to-number month) (string-to-number day) dayname 24-hours minutes)))
 (setq display-time-string-forms '((format-time-string "%m/%d(%a) %H:%M")))
 (display-time-mode t)
+
+;; rbenvのための環境変数設定
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
+;; (unless (eq system-type 'w32)
+;;   (setenv "PATH" (concat (getenv "HOME") "/.rbenv/shims:"
+;;                          (getenv "HOME") "/.rbenv/bin:" (getenv "PATH")))
+;;   (setq exec-path (cons (concat (getenv "HOME") "/.rbenv/shims")
+;;                         (cons (concat (getenv "HOME") "/.rbenv/bin") exec-path))))
+
+
+;; Finderからダブルクリックした時に、別フレームで表示されるのを止める
+(setq ns-pop-up-frames nil)
