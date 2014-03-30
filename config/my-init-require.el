@@ -344,9 +344,9 @@
 (define-key mc/keymap (kbd "C-z") 'mc/cycle-backward)
 
 ;; (shell-command "git clone git://github.com/magnars/expand-region.el.git")
-;; (require-and-when 'expand-region
-;;                  (define-key global-map (kbd "C-@") 'er/expand-region)
-;;                  (define-key global-map (kbd "C-`") 'er/contract-region))
+(require-and-when 'expand-region
+                 (define-key global-map (kbd "C-@") 'er/expand-region)
+                 (define-key global-map (kbd "C-`") 'er/contract-region))
 
 ;; (auto-install-from-emacswiki "smartrep.el")
 ;; (require-and-when 'smartrep
@@ -387,3 +387,9 @@
 ;; (install-elisp "http://coderepos.org/share/browser/lang/elisp/widen-window-mode/trunk/widen-window.el?format=txt")
 ;; (require-and-when 'widen-window
 ;;                   (global-widen-window-mode t))
+
+;; (package-install 'foreign-regexp)
+(require-and-when 'foreign-regexp
+                  (custom-set-variables
+                   '(foreign-regexp/regexp-type 'ruby)
+                   ))

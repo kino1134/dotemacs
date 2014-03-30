@@ -8,6 +8,9 @@
         org-force-self-insert
         org-self-insert-command
         org-yank
+        ruby-electric-close-matching-char
+        ruby-electric-matching-char
+        ruby-electric-space
         ))
 
 (setq mc/cmds-to-run-once

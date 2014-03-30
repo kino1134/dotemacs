@@ -8,6 +8,10 @@
 ;                  (set-face-background 'flymake-warnline "DarkBlue")
                   (set-face-background 'flymake-errline "red")
                   (set-face-background 'flymake-warnline "blue"))
+;; http://d.hatena.ne.jp/sugyan/20100705/1278306885
+(defadvice flymake-post-syntax-check (before flymake-force-check-was-interrupted)
+  (setq flymake-check-was-interrupted t))
+(ad-activate 'flymake-post-syntax-check)
 
 ;;; ruby-mode---------------------------------------------------------------------------
 ;; 標準のものではruby-electricがうまく動作しなかったため、
@@ -15,6 +19,7 @@
 ;; http://svn.ruby-lang.org/repos/ruby/trunk
 (autoload 'ruby-mode "ruby-mode" "Major mode for ruby files" t)
 (add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
 (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
 ;; inf-ruby
 (autoload 'run-ruby "inf-ruby" "Run an inferior Ruby process")
