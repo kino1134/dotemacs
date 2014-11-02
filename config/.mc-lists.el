@@ -5,11 +5,13 @@
       '(
         cua-delete-region
         cua-paste
+        last-sexp-toggle-display
         org-force-self-insert
         org-self-insert-command
         org-yank
         ruby-electric-close-matching-char
         ruby-electric-matching-char
+        ruby-electric-return
         ruby-electric-space
         ))
 
@@ -17,6 +19,7 @@
       '(
         backward-char
         describe-key
+        eval-print-last-sexp
         fold-dwim-toggle-all
         forward-char
         hs-toggle-hiding

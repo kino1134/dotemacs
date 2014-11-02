@@ -1,9 +1,6 @@
 ;; -*- coding:utf-8 -*-
 
-;; Emacs 23より前のバージョンの場合
-;; 設定を追加
-(when (< emacs-major-version 23)
-  (defvar user-emacs-directory "~/.emacs.d/"))
+(require 'cl)
 
 ;; load-pathを追加する関数を定義
 (defun add-to-load-path (&rest paths)
@@ -15,28 +12,72 @@
         (if (fboundp 'normal-top-level-add-subdirs-to-load-path)
             (normal-top-level-add-subdirs-to-load-path))))))
 
-;; マクロ内で[,@]は、評価しつつ、リストを1段階展開する
-;; requireを少し便利にするマクロ
-;; http://d.hatena.ne.jp/khiker/20091120/emacs_require_load_macro
-(defmacro require-and-when (feature &rest body)
-  `(if (require ,feature nil t)
-       (progn ,@body)
-     (message "Require error: %s" ,feature)))
-
-(require 'cl)
+;; ロードパス設定
+(add-to-load-path "site-lisp" "config")
+;; 使用しているパッケージ一覧
+(defvar install-package-list
+  '(
+    init-loader
+    auto-install
+    auto-complete
+    open-junk-file
+    maxframe
+    summarye
+    sequential-command
+    recentf-ext
+    bm
+    goto-chg
+    eldoc-extension
+    fold-dwim
+    jump-dls
+    enh-ruby-mode
+    rinari
+    rhtml-mode
+    yaml-mode
+    multiple-cursors
+    expand-region
+    undo-tree
+    foreign-regexp
+    flymake
+    csharp-mode
+    exec-path-from-shell
+    wgrep
+    ess
+    helm
+    helm-descbinds
+    ;; zenburn-theme
+    ;; hc-zenburn-theme
+    darkburn-theme
+    hlinum
+    flycheck
+    smooth-scroll
+    anzu
+    ;; rdebug
+    ;; yatex-mode
+    ;; gdev
+    ;; goshcomp
+    ))
 
 ;; プロキシサーバの設定を行う
 ;; (setq url-proxy-services '(("http" . "localhost:8080")))
 
-;; ロードパス設定
-(add-to-load-path "site-lisp" "config" "elpa")
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(package-initialize)
 
-(load "my-init-global-key-map")
-(load "my-init-require")
-(load "my-init-prog-mode")
+(let ((not-installed (loop for x in install-package-list
+                           when (not (package-installed-p x))
+                           collect x)))
+  (when not-installed
+    (package-refresh-contents)
+    (dolist (pkg not-installed)
+      (package-install pkg))))
+
+(require 'init-loader)
+(init-loader-load (expand-file-name (concat user-emacs-directory "inits")))
+
 (load "my-init-tex")
-(load "my-init-looks")
-(load "my-init-others")
 
 ;;; ---メモ---
 ;; executable-findで外部コマンドの実行パスを調査する。
@@ -58,7 +99,7 @@
 
 ;;  Set up git
 ;;   git config --global user.name "Your Name"
-;;   git config --global user.email inoue1134@gmail.com
+;;   git config --global user.email test@example.com
 
 ;; Next steps:
 
