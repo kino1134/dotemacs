@@ -1,0 +1,3 @@
+[submodule "color-themes"]
+	path = color-themes
+	url = https://github.com/emacs-jp/replace-colorthemes.git
