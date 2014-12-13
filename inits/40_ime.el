@@ -1,7 +1,7 @@
 ;; -*- coding:utf-8 -*-
 
 ;; Windowsの場合
-(when (eq window-system 'w32)
+(when (featurep 'dos-w32)
   (set-file-name-coding-system 'cp932)
   (setq locale-coding-system 'cp932)
   (setq w32-enable-synthesized-fonts t)

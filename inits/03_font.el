@@ -2,7 +2,7 @@
 
 ; フォント設定
 (when window-system
-  (when (eq system-type 'w32)
+  (when (featurep 'dos-w32)
     (set-face-attribute 'default nil
                         :family "consolas"
                         :height 120)
