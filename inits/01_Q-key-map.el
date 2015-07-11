@@ -1,5 +1,10 @@
 ;; -*- coding:utf-8 -*-
 
+;; インデントモードの切り替えを行う
+(defun my-toggle-indent-tabs-mode ()
+  (interactive)
+  (setq indent-tabs-mode (not indent-tabs-mode)))
+
 ;; C-qをマイキーバインドにする
 (defvar my-Q-key-map (make-sparse-keymap) "My original keymap binded to C-q.")
 (define-key global-map (kbd "C-q") my-Q-key-map)

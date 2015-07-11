@@ -12,7 +12,7 @@
                            (eq (cadr d) (cadr e))))
          whitespace-display-mappings)))
 
-(dolist (e '((space-mark ?\u3000 [?□]) (tab-mark ?\t [?^ ?\t])))
+(dolist (e '((space-mark ?\u3000 [?□]) (tab-mark ?\t [?\u00BB ?\t])))
   (add-to-list 'whitespace-display-mappings e))
 
 (set-face-foreground 'whitespace-newline "darkcyan")
@@ -22,4 +22,4 @@
  ;; '(whitespace-hspace ((t
  ;;                      (:foreground "pink4" :background "white"))))
  '(whitespace-tab ((t
-                    (:strike-through t :foreground "brown")))))
+                      (:foreground "pink4" :background nil :underline t)))))

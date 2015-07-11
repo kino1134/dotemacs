@@ -5,4 +5,5 @@
 (require 'auto-complete-config)
 (add-to-list 'ac-modes 'sql-mode)
 (add-to-list 'ac-modes 'yaml-mode)
+(add-to-list 'ac-modes 'enh-ruby-mode)
 (ac-config-default)
