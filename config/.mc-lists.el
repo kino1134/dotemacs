@@ -3,29 +3,13 @@
 
 (setq mc/cmds-to-run-for-all
       '(
-        cua-delete-region
-        cua-paste
-        last-sexp-toggle-display
-        org-force-self-insert
-        org-self-insert-command
-        org-yank
-        ruby-electric-close-matching-char
-        ruby-electric-matching-char
-        ruby-electric-return
-        ruby-electric-space
         ))
 
 (setq mc/cmds-to-run-once
       '(
-        backward-char
-        describe-key
-        eval-print-last-sexp
-        fold-dwim-toggle-all
-        forward-char
-        hs-toggle-hiding
-        next-line
-        org-export
-        previous-line
-        seq-end
         seq-home
+        forward-char
+        backward-char
+        next-line
+        previous-line
         ))
