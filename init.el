@@ -52,6 +52,9 @@
     flycheck
     smooth-scroll
     anzu
+    haskell-mode
+    google-translate
+    emmet-mode
     ;; rdebug
     ;; yatex-mode
     ;; gdev
@@ -63,7 +66,7 @@
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+;; (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
 (let ((not-installed (loop for x in install-package-list
